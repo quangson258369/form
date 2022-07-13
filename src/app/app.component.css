@@ -18,6 +18,10 @@ label {
     float: right;
 }
 
+input {
+    float: right;
+}
+
 .card {
     padding: 10px;
 }

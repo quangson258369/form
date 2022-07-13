@@ -12,25 +12,53 @@
                             <div class="form-group row">
                                 <label for="form_name" class="col-md-2 col-form-label">Name</label>
                                 <div class="col-md-10">
-                                    <input id="form_name" formControlName="name" type="text" name="name" class="form-control" placeholder="Please enter your name *" required="required" data-error="Name is required.">
+                                    <input id="form_name" (keypress)="keyPress($event)" formControlName="name" type="text" name="name" class="form-control" placeholder="Please enter your name *" [ngClass]="{ 'is-invalid': submitted && f.name.errors }">
                                 </div>
                             </div>
                         </div>
-                        <div class="controls">
-                            <div class="form-group row">
-                                <label for="form_Email" class="col-sm-2 col-form-label">Your E-mail</label>
-                                <div class="col-sm-10">
-                                    <input id="form_Email" formControlName="email" type="email" email=true name="email" class="form-control" placeholder="Please enter your name *" required="required" data-error="Name is required.">
+                        <div class="controls" formArrayName="emailArr">
+
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="form_Email" class=" col-form-label">Your E-mail</label>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="controls">
-                            <div class="form-group row">
-                                <label for="form_phone" class="col-md-2 col-form-label">Your phone num </label>
-                                <div class="col-md-10">
-                                    <input (keypress)="keyPress($event)" required type="text" formControlName="phone" class="form-control" placeholder="Enter Your phone Number" [ngClass]="{ 'is-invalid': submitted && f.phonenumber.errors }">
+
+
+                                <div class="form-group col-sm-8">
+                                    <div *ngFor="let e of getControls('emailArr'); let i = index">
+                                        <input [formControlName]="i" type="email" email=true class="form-control" placeholder="Please enter your email *" [ngClass]="{ 'is-invalid': submitted && emailArr.controls[i].errors }">
+                                        <div *ngIf="submitted && emailArr.controls[i].errors" class="invalid-feedback">
+                                            <div *ngIf="emailArr.controls[i].errors.required">Email is required </div>
+                                            <div *ngIf="emailArr.controls[i].errors.pattern">Wrong email</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 ">
+                                    <button class="btn btn-default" type="button" (click)="onAddEmail()">Add email</button>
 
                                 </div>
+                            </div>
+
+                        </div>
+                        <div class="controls" formArrayName="phoneArr">
+                            <div class="form-group row">
+                                <label for="form_phone" class="col-md-2 col-form-label">Your phone num </label>
+
+                                <div class="form-group col-sm-8">
+                                    <div *ngFor="let e of getControls('phoneArr'); let i = index">
+
+                                        <input (keypress)="keyPressNum($event)" [formControlName]="i" required type="text" formControlName="phone" class="form-control" placeholder="Enter Your phone Number" [ngClass]="{ 'is-invalid': submitted && phoneArr.controls[i].errors }">
+                                        <div id="form_Email" *ngIf="submitted && phoneArr.controls[i].errors" class="invalid-feedback">
+                                            <div *ngIf="phoneArr.controls[i].errors.required">Phone number is required </div>
+                                            <div *ngIf="phoneArr.controls[i].errors.pattern">Phone number must be at least 10 numbers </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2">
+                                    <button class="btn btn-default" type="button" (click)="onAddPhone()">Add phone</button>
+
+                                </div>
+
 
                             </div>
 
@@ -40,16 +68,13 @@
                             <div class="form-group row">
                                 <label for="form_message" class="col-md-2 col-form-label">Your message</label>
                                 <div class="col-md-10">
-                                    <textarea ngModel name="message" rows="4" id="form_message" class="form-control" formControlName="mess"></textarea>
+                                    <textarea rows="4" id="form_message" class="form-control" formControlName="mess"></textarea>
                                 </div>
                             </div>
                         </div>
 
                         <button class="btn btn-primary submit" type="submit">Submit</button>
-                        <div *ngIf="submitted && f.phone.errors" class="invalid-feedback">
-                            <div *ngIf="f.phone.errors.required">Phone number is required </div>
-                            <div *ngIf="f.phone.errors.pattern || f.phone.errors.maxlength || f.phone.errors.minlength">Phone number must be at least 10 numbers </div>
-                        </div>
+
                     </form>
 
                 </div>
@@ -61,10 +86,18 @@
     <div class="row" *ngIf="submitted">
         <div class="col-xs-12">
             <h3>Your Data</h3>
-            <p>Name: {{ user.name }}</p>
-            <p>Mail: {{ user.email }}</p>
-            <p>Phone {{ user.phone }}</p>
-            <p>Message: {{ user.mess }}</p>
+            <p>name: {{ user.name }}</p>
+            <p>mess: {{ user.mess }}</p>
+            <p>email:</p>
+            <div *ngFor="let e of email">
+
+                <p>{{ e }}</p>
+            </div>
+            <p>phone:</p>
+            <div *ngFor="let p of phone">
+                <p>{{ p }}</p>
+            </div>
+
 
         </div>
     </div>
